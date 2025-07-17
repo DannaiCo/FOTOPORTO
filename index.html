@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Día del Perro - iCo Medios</title>
+  <meta http-equiv="refresh" content="180">
+  <link rel="stylesheet" href="https://use.typekit.net/svb3fuh.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff;
+      overflow: hidden;
+    }
+
+    .contenedor {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    video#fondoVideo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      z-index: 0;
+    }
+
+    .foto {
+      position: absolute;
+      top: 17%;
+      left: 74%;
+      transform: translateX(-50%);
+      max-width: 70vw;
+      max-height: 70vh;
+      border-radius: 1vw;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      z-index: 2;
+      display: none;
+    }
+
+    .nombre-perro {
+      position: absolute;
+      top: 73%;
+      left: 55%;
+      transform: translateX(-50%);
+      z-index: 2;
+      font-weight: 800;
+      color: #ecd4db;
+      font-size: 3.5vw;
+      font-family: "jaf-domus-titling-web", sans-serif;
+      font-style: normal;
+      opacity: 0;
+      transition: opacity 0.3s ease-in;
+      text-align: center;
+    }
+
+    .nombre-perro.mostrar {
+      opacity: 1;
+    }
+
+    .foto.mostrar {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="contenedor">
+    <video autoplay loop muted playsinline id="fondoVideo">
+      <source src="fondo.mp4" type="video/mp4">
+      Tu navegador no soporta video.
+    </video>
+
+    <img id="fotoPerro" class="foto" src="" alt="Foto del perrito">
+    <div id="nombrePerro" class="nombre-perro"></div>
+  </div>
+
+  <script>
+    const url = "https://script.google.com/macros/s/AKfycbw5QQy8N9r3dEBUE93KIG5zUydHJGvulfYsZgTZH1QRcsgwECBYF-N3Ohb-uZHeOzQDkQ/exec";
+
+    fetch(url)
+      .then(res => res.json())
+      .then(aprobados => {
+        const nombreEl = document.getElementById("nombrePerro");
+        const imagenEl = document.getElementById("fotoPerro");
+
+        if (aprobados.length > 0) {
+          const elegido = aprobados[Math.floor(Math.random() * aprobados.length)];
+          
+          nombreEl.textContent = elegido.nombre.toUpperCase();
+          imagenEl.src = elegido.imagen;
+
+          // Mostrar con transición
+          setTimeout(() => {
+            nombreEl.classList.add("mostrar");
+            imagenEl.classList.add("mostrar");
+          }, 300);
+        } else {
+          nombreEl.textContent = "--";
+        }
+      });
+  </script>
+</body>
+</html>
