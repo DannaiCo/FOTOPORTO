@@ -78,29 +78,49 @@
   </div>
 
   <script>
-    const url = "https://script.google.com/macros/s/AKfycbw5QQy8N9r3dEBUE93KIG5zUydHJGvulfYsZgTZH1QRcsgwECBYF-N3Ohb-uZHeOzQDkQ/exec";
+  const url = "https://script.google.com/macros/s/AKfycbw5QQy8N9r3dEBUE93KIG5zUydHJGvulfYsZgTZH1QRcsgwECBYF-N3Ohb-uZHeOzQDkQ/exec";
 
-    fetch(url)
-      .then(res => res.json())
-      .then(aprobados => {
-        const nombreEl = document.getElementById("nombrePerro");
-        const imagenEl = document.getElementById("fotoPerro");
+  const nombreEl = document.getElementById("nombrePerro");
+  const imagenEl = document.getElementById("fotoPerro");
 
-        if (aprobados.length > 0) {
-          const elegido = aprobados[Math.floor(Math.random() * aprobados.length)];
-          
-          nombreEl.textContent = elegido.nombre.toUpperCase();
-          imagenEl.src = elegido.imagen;
+  function mezclarArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 
-          // Mostrar con transición
-          setTimeout(() => {
-            nombreEl.classList.add("mostrar");
-            imagenEl.classList.add("mostrar");
-          }, 300);
-        } else {
-          nombreEl.textContent = "--";
-        }
-      });
-  </script>
+  fetch(url)
+    .then(res => res.json())
+    .then(aprobados => {
+      if (aprobados.length === 0) {
+        nombreEl.textContent = "--";
+        return;
+      }
+
+      const lista = mezclarArray(aprobados); // Mezcla al cargar
+      let index = 0;
+
+      function mostrarPerro() {
+        const perro = lista[index];
+        nombreEl.classList.remove("mostrar");
+        imagenEl.classList.remove("mostrar");
+
+        setTimeout(() => {
+          nombreEl.textContent = perro.nombre.toUpperCase();
+          imagenEl.src = perro.imagen;
+
+          nombreEl.classList.add("mostrar");
+          imagenEl.classList.add("mostrar");
+
+          index = (index + 1) % lista.length; // Avanza al siguiente, vuelve al inicio si llega al final
+        }, 300);
+      }
+
+      mostrarPerro(); // Muestra el primero inmediatamente
+      setInterval(mostrarPerro, 5000); // Cambia cada 5 segundos
+    });
+</script>
 </body>
 </html>
