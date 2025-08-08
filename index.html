@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Día del Perro - iCo Medios</title>
+  <title>Día del Gato - iCo Medios</title>
   <meta http-equiv="refresh" content="180">
   <link rel="stylesheet" href="https://use.typekit.net/svb3fuh.css">
   <style>
@@ -29,26 +29,36 @@
       z-index: 0;
     }
 
-   .foto {
-  position: absolute;
-  top: 17%;
-  left: 74%;
-  transform: translateX(-50%);
-  height: 70vh;
-  border-radius: 1vw;
-  box-shadow: 0 0 20px rgba(0,0,0,0.4);
-  z-index: 2;
-  display: none;
+    /* Contenedor de la imagen para evitar desbordes */
+    .contenedor-foto {
+      position: absolute;
+      top: 15%;
+      left: 75%;
+      transform: translateX(-50%);
+      max-width: 70vw;
+      max-height: 70vh;
+      border-radius: 1vw;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      z-index: 2;
+      overflow: hidden; /* recorta la imagen si se sale */
+      display: none;
     }
 
-    .nombre-perro {
+    .contenedor-foto img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .nombre-gato {
       position: absolute;
       top: 73%;
       left: 55%;
       transform: translateX(-50%);
       z-index: 2;
       font-weight: 800;
-      color: #ecd4db;
+      color: #f9e79f;
       font-size: 3.5vw;
       font-family: "jaf-domus-titling-web", sans-serif;
       font-style: normal;
@@ -57,11 +67,11 @@
       text-align: center;
     }
 
-    .nombre-perro.mostrar {
+    .nombre-gato.mostrar {
       opacity: 1;
     }
 
-    .foto.mostrar {
+    .contenedor-foto.mostrar {
       display: block;
     }
   </style>
@@ -73,54 +83,39 @@
       Tu navegador no soporta video.
     </video>
 
-    <img id="fotoPerro" class="foto" src="" alt="Foto del perrito">
-    <div id="nombrePerro" class="nombre-perro"></div>
+    <div id="contenedorFoto" class="contenedor-foto">
+      <img id="fotoGato" src="" alt="Foto del gato">
+    </div>
+    <div id="nombreGato" class="nombre-gato"></div>
   </div>
 
   <script>
-  const url = "https://script.google.com/macros/s/AKfycbw5QQy8N9r3dEBUE93KIG5zUydHJGvulfYsZgTZH1QRcsgwECBYF-N3Ohb-uZHeOzQDkQ/exec";
+    const url = "https://script.google.com/macros/s/AKfycbz_tu_link_para_gatos/exec";
 
-  const nombreEl = document.getElementById("nombrePerro");
-  const imagenEl = document.getElementById("fotoPerro");
+    fetch(url)
+      .then(res => res.json())
+      .then(aprobados => {
+        const nombreEl = document.getElementById("nombreGato");
+        const contenedorFotoEl = document.getElementById("contenedorFoto");
+        const imagenEl = document.getElementById("fotoGato");
 
-  function mezclarArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  }
+        if (aprobados.length > 0) {
+          const elegido = aprobados[Math.floor(Math.random() * aprobados.length)];
+          
+          nombreEl.textContent = elegido.nombre.toUpperCase();
+          imagenEl.src = elegido.imagen;
 
-  fetch(url)
-    .then(res => res.json())
-    .then(aprobados => {
-      if (aprobados.length === 0) {
-        nombreEl.textContent = "--";
-        return;
-      }
-
-      const lista = mezclarArray(aprobados); // Mezcla al cargar
-      let index = 0;
-
-      function mostrarPerro() {
-        const perro = lista[index];
-        nombreEl.classList.remove("mostrar");
-        imagenEl.classList.remove("mostrar");
-
-        setTimeout(() => {
-          nombreEl.textContent = perro.nombre.toUpperCase();
-          imagenEl.src = perro.imagen;
-
-          nombreEl.classList.add("mostrar");
-          imagenEl.classList.add("mostrar");
-
-          index = (index + 1) % lista.length; // Avanza al siguiente, vuelve al inicio si llega al final
-        }, 300);
-      }
-
-      mostrarPerro(); // Muestra el primero inmediatamente
-      setInterval(mostrarPerro, 5000); // Cambia cada 5 segundos
-    });
-</script>
+          // Mostrar con transición
+          setTimeout(() => {
+            nombreEl.classList.add("mostrar");
+            contenedorFotoEl.classList.add("mostrar");
+          }, 300);
+        } else {
+          nombreEl.textContent = "--";
+        }
+      });
+  </script>
 </body>
 </html>
+
+
