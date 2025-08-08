@@ -92,7 +92,16 @@
  <script>
   const url = "https://script.google.com/macros/s/AKfycbw5hl60LhaU0G3_X7haQn5Sps3bkOg8FSmtTy82UBXtdZ9ey2TQZUrVP936Joc3SStS9A/exec";
   let gatos = [];
+  let orden = [];
   let index = 0;
+
+  function mezclarArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 
   function mostrarSiguienteGato() {
     if (gatos.length === 0) return;
@@ -101,14 +110,18 @@
     const contenedorFotoEl = document.getElementById("contenedorFoto");
     const imagenEl = document.getElementById("fotoGato");
 
-    const gato = gatos[index];
+    const gato = gatos[orden[index]];
     nombreEl.textContent = gato.nombre.toUpperCase();
     imagenEl.src = gato.imagen;
 
     nombreEl.classList.add("mostrar");
     contenedorFotoEl.classList.add("mostrar");
 
-    index = (index + 1) % gatos.length; // vuelve al primero cuando llegue al último
+    index++;
+    if (index >= orden.length) {
+      orden = mezclarArray([...Array(gatos.length).keys()]); // nuevo orden aleatorio
+      index = 0;
+    }
   }
 
   fetch(url)
@@ -116,13 +129,15 @@
     .then(aprobados => {
       gatos = aprobados;
       if (gatos.length > 0) {
+        orden = mezclarArray([...Array(gatos.length).keys()]);
         mostrarSiguienteGato();
-        setInterval(mostrarSiguienteGato, 10000); // 10 segundos
+        setInterval(mostrarSiguienteGato, 10000); // cambia cada 10 segundos
       }
     });
 </script>
 </body>
 </html>
+
 
 
 
