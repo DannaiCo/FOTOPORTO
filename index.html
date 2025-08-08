@@ -89,34 +89,41 @@
     <div id="nombreGato" class="nombre-gato"></div>
   </div>
 
-  <script>
-    const url = "https://script.google.com/macros/s/AKfycbw5hl60LhaU0G3_X7haQn5Sps3bkOg8FSmtTy82UBXtdZ9ey2TQZUrVP936Joc3SStS9A/exec";
+ <script>
+  const url = "https://script.google.com/macros/s/AKfycbw5hl60LhaU0G3_X7haQn5Sps3bkOg8FSmtTy82UBXtdZ9ey2TQZUrVP936Joc3SStS9A/exec";
+  let gatos = [];
+  let index = 0;
 
-    fetch(url)
-      .then(res => res.json())
-      .then(aprobados => {
-        const nombreEl = document.getElementById("nombreGato");
-        const contenedorFotoEl = document.getElementById("contenedorFoto");
-        const imagenEl = document.getElementById("fotoGato");
+  function mostrarSiguienteGato() {
+    if (gatos.length === 0) return;
 
-        if (aprobados.length > 0) {
-          const elegido = aprobados[Math.floor(Math.random() * aprobados.length)];
-          
-          nombreEl.textContent = elegido.nombre.toUpperCase();
-          imagenEl.src = elegido.imagen;
+    const nombreEl = document.getElementById("nombreGato");
+    const contenedorFotoEl = document.getElementById("contenedorFoto");
+    const imagenEl = document.getElementById("fotoGato");
 
-          // Mostrar con transición
-          setTimeout(() => {
-            nombreEl.classList.add("mostrar");
-            contenedorFotoEl.classList.add("mostrar");
-          }, 300);
-        } else {
-          nombreEl.textContent = "--";
-        }
-      });
-  </script>
+    const gato = gatos[index];
+    nombreEl.textContent = gato.nombre.toUpperCase();
+    imagenEl.src = gato.imagen;
+
+    nombreEl.classList.add("mostrar");
+    contenedorFotoEl.classList.add("mostrar");
+
+    index = (index + 1) % gatos.length; // vuelve al primero cuando llegue al último
+  }
+
+  fetch(url)
+    .then(res => res.json())
+    .then(aprobados => {
+      gatos = aprobados;
+      if (gatos.length > 0) {
+        mostrarSiguienteGato();
+        setInterval(mostrarSiguienteGato, 10000); // 10 segundos
+      }
+    });
+</script>
 </body>
 </html>
+
 
 
 
